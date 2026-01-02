@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
 from pydantic import BaseModel
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
@@ -29,6 +30,13 @@ class SettingsModel(BaseModel):
     lat: float
     lon: float
     interval: int
+
+class SearchModel(BaseModel):
+    query: Optional[str] = None
+    lat: Optional[float] = None
+    lon: Optional[float] = None
+    start: Optional[str] = None
+    end: Optional[str] = None
 
 def job_fetch_and_store():
 
@@ -59,8 +67,20 @@ def get_status():
     }
 
 @app.get("/api/history")
-def get_history():
-    return db_repo.get_all(limit=20)
+def get_history(city: Optional[str] = None, start: Optional[str] = None, end: Optional[str] = None, limit: int = 100):
+    """Return weather history, optionally filtered by city (or description) and time range.
+    Time values should be ISO datetime strings (e.g., 2026-01-02T15:00).
+    """
+    return db_repo.get_all_filtered(city=city, start=start, end=end, limit=limit)
+
+@app.post("/api/search")
+def record_search(search: SearchModel):
+    db_repo.record_search(search.query, search.lat, search.lon, search.start, search.end)
+    return {"message": "Search recorded"}
+
+@app.get("/api/searches")
+def get_searches(limit: int = 50):
+    return db_repo.get_search_history(limit=limit)
 
 @app.post("/api/settings")
 def update_settings(settings: SettingsModel):

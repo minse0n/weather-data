@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { fetchHistory, fetchStatus, updateSettings } from './api';
+import { fetchHistory, fetchStatus, updateSettings, fetchHistoryFiltered, postSearch } from './api';
 import WeatherChart from './components/WeatherChart';
 import SettingsForm from './components/SettingsForm';
+import SearchForm from './components/SearchForm';
+import SearchHistory from './components/SearchHistory';
 
 function App() {
     const [history, setHistory] = useState([]);
@@ -28,6 +30,24 @@ function App() {
         loadData();
     }, []);
 
+    const handleSearch = async (filters) => {
+        try {
+            setLoading(true);
+            await postSearch(filters);
+            const data = await fetchHistoryFiltered({
+                city: filters.query,
+                start: filters.start,
+                end: filters.end,
+                limit: 200
+            });
+            setHistory(data);
+        } catch (error) {
+            console.error(error);
+            alert('Search failed');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleUpdateSettings = async (lat, lon, interval) => {
         try {
@@ -50,10 +70,14 @@ function App() {
             {loading && <p style={{ textAlign: 'center' }}>Loading...</p>}
             
             {!loading && settings && (
-                <SettingsForm 
-                    currentSettings={settings} 
-                    onUpdate={handleUpdateSettings} 
-                />
+                <>
+                    <SettingsForm 
+                        currentSettings={settings} 
+                        onUpdate={handleUpdateSettings} 
+                    />
+                    <SearchForm onSearch={handleSearch} />
+                    <SearchHistory onRun={handleSearch} />
+                </>
             )}
 
             {!loading && history.length > 0 && (
@@ -75,8 +99,8 @@ function App() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {history.map((row, idx) => (
-                                    <tr key={idx}>
+                                {history.map((row) => (
+                                    <tr key={row.id ?? row.timestamp}>
                                         <td>{row.timestamp}</td>
                                         <td>{row.city}</td>
                                         <td>{row.temp}</td>

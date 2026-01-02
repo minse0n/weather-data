@@ -5,6 +5,8 @@ const SettingsForm = ({ currentSettings, onUpdate }) => {
 
     useEffect(() => {
         if (currentSettings) {
+            // Sync incoming settings to local form state
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setFormState({
                 lat: currentSettings.lat,
                 lon: currentSettings.lon,

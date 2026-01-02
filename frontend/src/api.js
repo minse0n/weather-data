@@ -20,3 +20,23 @@ export const updateSettings = async (lat, lon, interval) => {
     });
     return response.data;
 };
+
+export const fetchHistoryFiltered = async ({ city, start, end, limit } = {}) => {
+    const params = new URLSearchParams();
+    if (city) params.append('city', city);
+    if (start) params.append('start', start);
+    if (end) params.append('end', end);
+    if (limit) params.append('limit', limit);
+    const response = await axios.get(`${API_BASE_URL}/api/history?${params.toString()}`);
+    return response.data;
+};
+
+export const postSearch = async ({ query, lat, lon, start, end }) => {
+    const response = await axios.post(`${API_BASE_URL}/api/search`, { query, lat, lon, start, end });
+    return response.data;
+};
+
+export const fetchSearchHistory = async (limit = 50) => {
+    const response = await axios.get(`${API_BASE_URL}/api/searches?limit=${limit}`);
+    return response.data;
+};
