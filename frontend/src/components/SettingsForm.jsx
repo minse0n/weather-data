@@ -20,7 +20,7 @@ const SettingsForm = ({ currentSettings, onUpdate }) => {
 
     return (
         <div style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-            <h3>⚙️ Configuration (Coordinates)</h3>
+            <h3>Configuration (Coordinates)</h3>
             <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
                 <div>
                     <label>Latitude:</label><br/>

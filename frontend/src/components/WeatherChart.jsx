@@ -27,8 +27,6 @@ const WeatherChart = ({ history }) => {
     const labels = sortedData.map(item => new Date(item.timestamp).toLocaleTimeString());
     const temps = sortedData.map(item => item.temp);
     const humidities = sortedData.map(item => item.humidity);
-    const lat = sortedData.map(item => item.lat);
-    const lon = sortedData.map(item => item.lon);
 
     const data = {
         labels,
@@ -47,20 +45,6 @@ const WeatherChart = ({ history }) => {
                 backgroundColor: 'rgba(54, 162, 235, 0.5)',
                 tension: 0.3,
             },
-            {
-                label: 'Latitude',
-                data: lat,
-                borderColor: 'rgb(75, 192, 192)',
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                tension: 0.3,
-            },
-            {
-                label: 'Longitude',
-                data: lon,
-                borderColor: 'rgb(153, 102, 255)',
-                backgroundColor: 'rgba(153, 102, 255, 0.5)',
-                tension: 0.3, 
-            }
         ],
     };
 
