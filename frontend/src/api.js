@@ -12,9 +12,10 @@ export const fetchStatus = async () => {
     return response.data;
 };
 
-export const updateSettings = async (city, interval) => {
+export const updateSettings = async (lat, lon, interval) => {
     const response = await axios.post(`${API_BASE_URL}/api/settings`, {
-        city,
+        lat: parseFloat(lat),
+        lon: parseFloat(lon),
         interval: parseInt(interval)
     });
     return response.data;

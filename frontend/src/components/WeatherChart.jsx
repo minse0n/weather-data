@@ -26,6 +26,9 @@ const WeatherChart = ({ history }) => {
     const sortedData = [...history].reverse();
     const labels = sortedData.map(item => new Date(item.timestamp).toLocaleTimeString());
     const temps = sortedData.map(item => item.temp);
+    const humidities = sortedData.map(item => item.humidity);
+    const lat = sortedData.map(item => item.lat);
+    const lon = sortedData.map(item => item.lon);
 
     const data = {
         labels,
@@ -37,6 +40,27 @@ const WeatherChart = ({ history }) => {
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 tension: 0.3,
             },
+            {
+                label: 'Humidity (%)',
+                data: humidities,
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                tension: 0.3,
+            },
+            {
+                label: 'Latitude',
+                data: lat,
+                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                tension: 0.3,
+            },
+            {
+                label: 'Longitude',
+                data: lon,
+                borderColor: 'rgb(153, 102, 255)',
+                backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                tension: 0.3, 
+            }
         ],
     };
 
@@ -44,7 +68,7 @@ const WeatherChart = ({ history }) => {
         responsive: true,
         plugins: {
             legend: { position: 'top' },
-            title: { display: true, text: 'Temperature Trend' },
+            title: { display: true, text: 'Temperature and Humidity Trend' },
         },
     };
 

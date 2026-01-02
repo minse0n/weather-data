@@ -8,7 +8,6 @@ function App() {
     const [settings, setSettings] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // 데이터 불러오기 함수
     const loadData = async () => {
         try {
             const [historyData, statusData] = await Promise.all([
@@ -19,27 +18,26 @@ function App() {
             setSettings(statusData);
         } catch (error) {
             console.error("Failed to fetch data:", error);
-            alert("Backend 연결 실패! 서버가 켜져 있나요?");
+            alert("Failed to connect to backend. Is the server running?");
         } finally {
             setLoading(false);
         }
     };
 
-    // 초기 실행
     useEffect(() => {
         loadData();
     }, []);
 
-    // 설정 업데이트 핸들러
-    const handleUpdateSettings = async (city, interval) => {
+
+    const handleUpdateSettings = async (lat, lon, interval) => {
         try {
             setLoading(true);
-            await updateSettings(city, interval);
-            alert(`설정 변경 완료: ${city} (${interval}분)`);
-            // 설정 변경 후 최신 데이터 다시 로드
+            await updateSettings(lat, lon, interval);
+            alert(`Settings updated: Lat ${lat}, Lon ${lon} (${interval} min)`);
             await loadData();
         } catch (error) {
-            alert("설정 업데이트 실패");
+            console.error(error);
+            alert("Failed to update settings");
         } finally {
             setLoading(false);
         }
@@ -47,7 +45,7 @@ function App() {
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-            <h1 style={{ textAlign: 'center' }}>🌤️ Weather Dashboard (React)</h1>
+            <h1 style={{ textAlign: 'center' }}>Weather Dashboard (React)</h1>
             
             {loading && <p style={{ textAlign: 'center' }}>Loading...</p>}
             
@@ -63,7 +61,7 @@ function App() {
                     <WeatherChart history={history} />
                     
                     <div style={{ marginTop: '30px' }}>
-                        <h3>📜 Recent History</h3>
+                        <h3>Recent History</h3>
                         <table border="1" cellPadding="10" style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
                             <thead style={{ background: '#f4f4f4' }}>
                                 <tr>
@@ -71,6 +69,9 @@ function App() {
                                     <th>City</th>
                                     <th>Temp (°C)</th>
                                     <th>Humidity (%)</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th> 
+                                    <th>Description</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,6 +81,9 @@ function App() {
                                         <td>{row.city}</td>
                                         <td>{row.temp}</td>
                                         <td>{row.humidity}</td>
+                                        <td>{row.lat}</td>
+                                        <td>{row.lon}</td> 
+                                        <td>{row.description}</td>
                                     </tr>
                                 ))}
                             </tbody>
